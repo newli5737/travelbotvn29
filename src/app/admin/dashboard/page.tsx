@@ -66,10 +66,10 @@ export default function DashboardPage() {
       <div>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Dashboard
+            Bảng Điều Khiển
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Welcome back! Here&apos;s an overview of your travel data.
+            Chào mừng quay lại! Đây là tổng quan về dữ liệu du lịch của bạn.
           </p>
 
         </div>
@@ -89,37 +89,37 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <StatCard
               icon={<MapPin className="w-6 h-6 text-white" />}
-              label="Destinations"
+              label="Điểm Đến"
               value={stats.destinations_count}
               color="bg-ocean-blue"
             />
             <StatCard
               icon={<Hotel className="w-6 h-6 text-white" />}
-              label="Hotels"
+              label="Khách Sạn"
               value={stats.hotels_count}
               color="bg-sand-yellow text-dark-gray"
             />
             <StatCard
               icon={<Compass className="w-6 h-6 text-white" />}
-              label="Tours"
+              label="Tour Du Lịch"
               value={stats.tours_count}
               color="bg-accent"
             />
             <StatCard
               icon={<Users className="w-6 h-6 text-white" />}
-              label="Restaurants"
+              label="Nhà Hàng"
               value={stats.restaurants_count}
               color="bg-green-500"
             />
             <StatCard
               icon={<BarChart3 className="w-6 h-6 text-white" />}
-              label="Activities"
+              label="Hoạt Động"
               value={stats.activities_count}
               color="bg-purple-500"
             />
             <StatCard
               icon={<Users className="w-6 h-6 text-white" />}
-              label="Reviews"
+              label="Bình Luận"
               value={stats.reviews_count}
               color="bg-indigo-500"
             />
@@ -128,7 +128,7 @@ export default function DashboardPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-muted-foreground">
-                Failed to load statistics. Please try again later.
+                Không thể tải thống kê. Vui lòng thử lại sau.
               </p>
             </CardContent>
           </Card>
@@ -137,9 +137,9 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>Hành Động Nhanh</CardTitle>
             <CardDescription>
-              Manage your travel data quickly and efficiently
+              Quản lý dữ liệu du lịch của bạn một cách nhanh chóng và hiệu quả
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
                 className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 hover:shadow-md transition-shadow text-center"
               >
                 <p className="font-semibold text-blue-900 dark:text-blue-100">
-                  Manage Destinations
+                  Quản Lý Điểm Đến
                 </p>
               </a>
               <a
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                 className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800 hover:shadow-md transition-shadow text-center"
               >
                 <p className="font-semibold text-amber-900 dark:text-amber-100">
-                  Manage Hotels
+                  Quản Lý Khách Sạn
                 </p>
               </a>
               <a
@@ -165,7 +165,7 @@ export default function DashboardPage() {
                 className="p-4 bg-cyan-50 dark:bg-cyan-950/20 rounded-lg border border-cyan-200 dark:border-cyan-800 hover:shadow-md transition-shadow text-center"
               >
                 <p className="font-semibold text-cyan-900 dark:text-cyan-100">
-                  Manage Tours
+                  Quản Lý Tour Du Lịch
                 </p>
               </a>
             </div>
