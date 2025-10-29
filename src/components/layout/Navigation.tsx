@@ -11,13 +11,13 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { href: '/', label: 'Home' },
-  { href: '/destinations', label: 'Destinations' },
-  { href: '/tours', label: 'Tours' },
-  { href: '/hotels', label: 'Hotels' },
-  { href: '/restaurants', label: 'Restaurants' },
-  { href: '/about', label: 'About' },
-  { href: '/admin/login', label: 'Admin' },
+  { href: '/', label: 'Trang Chủ' },
+  { href: '/destinations', label: 'Điểm Đến' },
+  { href: '/tours', label: 'Tour Du Lịch' },
+  { href: '/hotels', label: 'Khách Sạn' },
+  { href: '/restaurants', label: 'Nhà Hàng' },
+  { href: '/about', label: 'Về Chúng Tôi' },
+  { href: '/admin/login', label: 'Quản Trị' },
 ];
 
 export const Navigation: React.FC = () => {
@@ -28,7 +28,7 @@ export const Navigation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="text-2xl font-bold">🧳 Travelbot</div>
+            <div className="text-2xl font-bold">🧳 Du Lịch AI</div>
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
