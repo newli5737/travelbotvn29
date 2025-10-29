@@ -22,15 +22,15 @@ const destinationSchema = z.object({
 type DestinationFormData = z.infer<typeof destinationSchema>;
 
 const columns: ColumnDef<Destination>[] = [
-  { key: 'name', label: 'Name' },
-  { key: 'province', label: 'Province' },
-  { key: 'region', label: 'Region' },
+  { key: 'name', label: 'Tên' },
+  { key: 'province', label: 'Tỉnh/Thành Phố' },
+  { key: 'region', label: 'Khu Vực' },
   {
     key: 'rating',
-    label: 'Rating',
+    label: 'Đánh Giá',
     render: (value) => `${value}/5`,
   },
-  { key: 'best_time_to_visit', label: 'Best Time' },
+  { key: 'best_time_to_visit', label: 'Thời Gian Tốt Nhất' },
 ];
 
 export default function DestinationsPage() {
@@ -83,7 +83,7 @@ export default function DestinationsPage() {
       setIsDialogOpen(false);
       setEditingItem(null);
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'Failed to save');
+      setSubmitError(err instanceof Error ? err.message : 'Không thể lưu');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,45 +92,45 @@ export default function DestinationsPage() {
   const formFields = [
     {
       name: 'name',
-      label: 'Destination Name',
-      placeholder: 'e.g., Paris, Tokyo',
+      label: 'Tên Điểm Đến',
+      placeholder: 'ví dụ: Paris, Tokyo',
       required: true,
     },
     {
       name: 'province',
-      label: 'Province',
-      placeholder: 'e.g., Île-de-France',
+      label: 'Tỉnh/Thành Phố',
+      placeholder: 'ví dụ: Île-de-France',
       required: true,
     },
     {
       name: 'region',
-      label: 'Region',
-      placeholder: 'e.g., Europe, Asia',
+      label: 'Khu Vực',
+      placeholder: 'ví dụ: Châu Âu, Châu Á',
       required: true,
     },
     {
       name: 'rating',
-      label: 'Rating (0-5)',
+      label: 'Đánh Giá (0-5)',
       type: 'number' as const,
       placeholder: '4.5',
       required: true,
     },
     {
       name: 'best_time_to_visit',
-      label: 'Best Time to Visit',
-      placeholder: 'e.g., April to May',
+      label: 'Thời Gian Tốt Nhất Để Thăm',
+      placeholder: 'ví dụ: Tháng 4 đến Tháng 5',
       required: true,
     },
     {
       name: 'description',
-      label: 'Description',
+      label: 'Mô Tả',
       type: 'textarea' as const,
-      placeholder: 'Describe this destination...',
+      placeholder: 'Mô tả điểm đến này...',
       required: true,
     },
     {
       name: 'image_url',
-      label: 'Image URL',
+      label: 'URL Hình Ảnh',
       placeholder: 'https://...',
       required: false,
     },
@@ -141,10 +141,10 @@ export default function DestinationsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Manage Destinations
+            Quản Lý Điểm Đến
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Create, read, update, and delete travel destinations
+            Tạo, đọc, cập nhật và xóa các điểm đến du lịch
           </p>
         </div>
 
