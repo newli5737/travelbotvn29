@@ -25,7 +25,7 @@ export default function HotelsPage() {
         setHotels(response.data.data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load hotels');
+      setError(err instanceof Error ? err.message : 'Không thể tải khách sạn');
     } finally {
       setIsLoading(false);
     }
@@ -37,10 +37,10 @@ export default function HotelsPage() {
       <div className="bg-gradient-to-r from-ocean-blue to-ocean-light text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Book Hotels 🏨
+            Đặt Khách Sạn 🏨
           </h1>
           <p className="text-lg opacity-90">
-            Find the perfect accommodation for your stay
+            Tìm nơi ở lý tưởng cho chuyến đi của bạn
           </p>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function HotelsPage() {
         ) : hotels.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">
-              No hotels found. Please try again later.
+              Không tìm thấy khách sạn nào. Vui lòng thử lại sau.
             </p>
           </div>
         ) : (
