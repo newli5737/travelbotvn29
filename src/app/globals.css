@@ -50,6 +50,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --radius-base: var(--radius);
+  --color-ocean-blue: var(--ocean-blue);
+  --color-ocean-light: var(--ocean-light);
+  --color-ocean-dark: var(--ocean-dark);
+  --color-sand-yellow: var(--sand-yellow);
+  --color-sand-light: var(--sand-light);
+  --color-white: var(--white);
+  --color-dark-gray: var(--dark-gray);
 }
 
 @media (prefers-color-scheme: dark) {
