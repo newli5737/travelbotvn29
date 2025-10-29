@@ -20,12 +20,17 @@ export default function DestinationsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axiosClient.get<ApiResponse<Destination[]>>(
-        '/destinations'
-      );
-      if (response.data.data) {
-        setDestinations(response.data.data);
+
+      const response = await axiosClient.get<Destination[]>('/destinations/');
+      console.log('Response:', response.data);
+
+      if (Array.isArray(response.data)) {
+        setDestinations(response.data);
+      } else {
+        console.warn('Unexpected response format:', response.data);
+        setDestinations([]);
       }
+
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Không thể tải điểm đến'
@@ -34,6 +39,7 @@ export default function DestinationsPage() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-white dark:bg-background">
