@@ -11,122 +11,170 @@ interface WebSocketMessage {
 }
 
 export const useChat = () => {
-  const store = useChatStore();
+  const addMessage = useChatStore((state) => state.addMessage);
+  const setLoading = useChatStore((state) => state.setLoading);
+  const setError = useChatStore((state) => state.setError);
+  const clearMessages = useChatStore((state) => state.clearMessages);
+  
+  const messages = useChatStore((state) => state.messages);
+  const isLoading = useChatStore((state) => state.isLoading);
+  const error = useChatStore((state) => state.error);
+
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef<number>(0);
   const maxReconnectAttemptsRef = useRef<number>(5);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isConnectingRef = useRef<boolean>(false);
+  const isMountedRef = useRef<boolean>(true); 
 
   // Initialize WebSocket connection
   useEffect(() => {
+    isMountedRef.current = true;
+
     const connectWebSocket = () => {
-      // Prevent multiple simultaneous connection attempts
+      if (!isMountedRef.current) return;
+      
       if (isConnectingRef.current || wsRef.current?.readyState === WebSocket.OPEN) {
+        console.log('⏭️ Skipping connect - already connected or connecting');
         return;
       }
 
       isConnectingRef.current = true;
 
       try {
-        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001';
+        const baseWsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000';
+        const wsUrl = `${baseWsUrl.replace(/\/$/, '')}/ws/chat`;
+        console.log('🔗 Connecting to', wsUrl);
+
         wsRef.current = new WebSocket(wsUrl);
 
         wsRef.current.onopen = () => {
-          console.log('WebSocket connected');
+          if (!isMountedRef.current) {
+            console.log('⚠️ Component unmounted, closing connection');
+            wsRef.current?.close();
+            return;
+          }
+          
+          console.log('✅ WebSocket connected');
           reconnectAttemptsRef.current = 0;
           isConnectingRef.current = false;
-          store.setError(null);
+          setError(null);
+
+          wsRef.current?.send(JSON.stringify({ type: 'init' }));
         };
 
         wsRef.current.onmessage = (event: MessageEvent<string>) => {
+          if (!isMountedRef.current) return;
+          
           try {
             const message: WebSocketMessage = JSON.parse(event.data);
 
-            const chatMessage: ChatMessage = {
-              id: Date.now().toString(),
-              sender: 'bot',
-              content: message.content || '',
-              timestamp: new Date().toISOString(),
-              metadata: {
-                intent: message.intent,
-                data: message.data,
-              },
-            };
+            if (message.type === 'ping') {
+              wsRef.current?.send(JSON.stringify({ type: 'pong' }));
+              return;
+            }
 
-            store.addMessage(chatMessage);
+            if (message.type === 'init_ack') {
+              console.log('✅ Connection acknowledged:', message.content);
+              return;
+            }
+
+            if (message.type === 'error') {
+              setError(message.content || 'An error occurred');
+              return;
+            }
+
+            if (message.type === 'message') {
+              const chatMessage: ChatMessage = {
+                id: Date.now().toString(),
+                sender: 'bot',
+                content: message.content || '',
+                timestamp: new Date().toISOString(),
+                metadata: {
+                  intent: message.intent,
+                  data: message.data,
+                },
+              };
+              addMessage(chatMessage);
+            }
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
           }
         };
 
-        wsRef.current.onerror = () => {
+        wsRef.current.onerror = (event) => {
           isConnectingRef.current = false;
-          // Only log first error and every 5th attempt to reduce console spam
           if (reconnectAttemptsRef.current === 0 || reconnectAttemptsRef.current % 5 === 0) {
-            console.error('WebSocket error: Failed to connect to chat service');
+            console.error('💥 WebSocket error', event);
           }
         };
 
-        wsRef.current.onclose = () => {
+        wsRef.current.onclose = (event) => {
           isConnectingRef.current = false;
+          console.warn('🔻 WebSocket closed', event.code, event.reason);
+
+          if (!isMountedRef.current) {
+            console.log('Component unmounted, not reconnecting');
+            return;
+          }
 
           if (reconnectAttemptsRef.current < maxReconnectAttemptsRef.current) {
-            // Exponential backoff: 2^attempt * 1000ms (1s, 2s, 4s, 8s, 16s)
             const backoffDelay = Math.min(
               Math.pow(2, reconnectAttemptsRef.current) * 1000,
-              30000 // Cap at 30 seconds
+              30000
             );
 
             reconnectAttemptsRef.current += 1;
 
             if (reconnectAttemptsRef.current === 1) {
-              store.setError('Chat service unavailable. Attempting to reconnect...');
+              setError('Chat service unavailable. Attempting to reconnect...');
             }
 
+            console.log(`⏳ Reconnecting in ${backoffDelay}ms (attempt ${reconnectAttemptsRef.current})`);
             reconnectTimeoutRef.current = setTimeout(connectWebSocket, backoffDelay);
           } else {
-            store.setError('Chat service unavailable. Please refresh the page or try again later.');
+            setError('Chat service unavailable. Please refresh the page or try again later.');
           }
         };
-      } catch {
+      } catch (error) {
         isConnectingRef.current = false;
-        if (reconnectAttemptsRef.current === 0) {
-          console.error('Failed to initialize WebSocket connection');
-        }
+        console.error('Failed to initialize WebSocket connection', error);
       }
     };
 
     connectWebSocket();
 
     return () => {
+      console.log('🧹 Cleaning up WebSocket');
+      isMountedRef.current = false;
       isConnectingRef.current = false;
+      
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
       }
+      
       if (wsRef.current) {
         wsRef.current.close();
+        wsRef.current = null;
       }
     };
-  }, [store]);
+  }, []); 
 
-  // Send message function
   const sendMessage = useCallback(
     async (content: string) => {
       try {
-        store.setError(null);
-        store.setLoading(true);
+        setError(null);
+        setLoading(true);
 
-        // Add user message to store
         const userMessage: ChatMessage = {
           id: Date.now().toString(),
           sender: 'user',
           content,
           timestamp: new Date().toISOString(),
         };
-        store.addMessage(userMessage);
+        addMessage(userMessage);
 
-        // Send via WebSocket if connected
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
           wsRef.current.send(
             JSON.stringify({
@@ -136,7 +184,7 @@ export const useChat = () => {
             })
           );
         } else {
-          // Fallback to REST API
+          console.warn('WebSocket not connected, falling back to HTTP');
           const response = await axiosClient.post('/chat', { message: content });
           if (response.data.data) {
             const botMessage: ChatMessage = {
@@ -149,24 +197,24 @@ export const useChat = () => {
                 data: response.data.data.data,
               },
             };
-            store.addMessage(botMessage);
+            addMessage(botMessage);
           }
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
-        store.setError(errorMessage);
+        setError(errorMessage);
       } finally {
-        store.setLoading(false);
+        setLoading(false);
       }
     },
-    [store]
+    [addMessage, setError, setLoading] 
   );
 
   return {
-    messages: store.messages,
-    isLoading: store.isLoading,
-    error: store.error,
+    messages,
+    isLoading,
+    error,
     sendMessage,
-    clearMessages: store.clearMessages,
+    clearMessages,
   };
 };
