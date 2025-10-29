@@ -27,7 +27,7 @@ const columns: ColumnDef<Hotel>[] = [
   {
     key: 'star_rating',
     label: 'Stars',
-    render: (value) => `${'⭐'.repeat(value)}`,
+    render: (value) => `${'⭐'.repeat(Number(value) || 0)}`,
   },
   { key: 'price_range', label: 'Price Range' },
   {
@@ -145,6 +145,18 @@ export default function HotelsPage() {
     },
   ];
 
+  // Convert Hotel amenities array to comma-separated string for form
+  const getDefaultValues = (hotel: Hotel | null) => {
+    if (!hotel) return undefined;
+    
+    return {
+      ...hotel,
+      amenities: Array.isArray(hotel.amenities) 
+        ? hotel.amenities.join(', ') 
+        : hotel.amenities || '',
+    };
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -182,7 +194,7 @@ export default function HotelsPage() {
           <EntityForm
             title=""
             fields={formFields}
-            defaultValues={editingItem || undefined}
+            defaultValues={getDefaultValues(editingItem)}
             onSubmit={handleSubmit}
             isLoading={isSubmitting}
             error={submitError}

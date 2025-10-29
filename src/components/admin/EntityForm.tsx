@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodSchema } from 'zod';
+import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,18 +19,18 @@ interface FormField {
   options?: { value: string; label: string }[];
 }
 
-interface EntityFormProps {
+export interface EntityFormProps<T extends z.ZodType<any, any, any>> {
   title: string;
   fields: FormField[];
-  defaultValues?: Record<string, string | number | boolean | undefined>;
-  onSubmit: (data: Record<string, string | number | boolean | undefined>) => Promise<void>;
+  defaultValues?: Partial<z.infer<T>>;
+  onSubmit: (data: z.infer<T>) => Promise<void>;
   isLoading?: boolean;
   error?: string | null;
   onCancel?: () => void;
-  schema: ZodSchema;
+  schema: T;
 }
 
-export const EntityForm: React.FC<EntityFormProps> = ({
+export function EntityForm<T extends z.ZodType<any, any, any>>({
   title,
   fields,
   defaultValues,
@@ -39,10 +39,12 @@ export const EntityForm: React.FC<EntityFormProps> = ({
   error = null,
   onCancel,
   schema,
-}) => {
+}: EntityFormProps<T>) {
+  type FormData = z.infer<T>;
+  
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues,
+    resolver: zodResolver(schema) as any,
+    defaultValues: defaultValues as any,
   });
 
   return (
@@ -51,7 +53,7 @@ export const EntityForm: React.FC<EntityFormProps> = ({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-6">
           {error && (
             <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-lg flex items-center gap-3">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -72,14 +74,14 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                   placeholder={field.placeholder}
                   disabled={isLoading}
                   className="flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  {...register(field.name)}
+                  {...register(field.name as any)}
                 />
               ) : field.type === 'select' ? (
                 <select
                   id={field.name}
                   disabled={isLoading}
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  {...register(field.name)}
+                  {...register(field.name as any)}
                 >
                   <option value="">Select {field.label}</option>
                   {field.options?.map((opt) => (
@@ -94,13 +96,13 @@ export const EntityForm: React.FC<EntityFormProps> = ({
                   type={field.type || 'text'}
                   placeholder={field.placeholder}
                   disabled={isLoading}
-                  {...register(field.name)}
+                  {...register(field.name as any)}
                 />
               )}
 
-              {errors[field.name] && (
+              {(errors as any)[field.name] && (
                 <p className="text-sm text-destructive">
-                  {errors[field.name]?.message as string}
+                  {(errors as any)[field.name]?.message as string}
                 </p>
               )}
             </div>
@@ -136,4 +138,4 @@ export const EntityForm: React.FC<EntityFormProps> = ({
       </CardContent>
     </Card>
   );
-};
+}

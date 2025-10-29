@@ -14,7 +14,7 @@ const weatherSchema = z.object({
   month: z.coerce.number().min(1).max(12, 'Month must be between 1 and 12'),
   avg_temp: z.coerce.number().min(-50).max(60, 'Temperature must be realistic'),
   description: z.string().min(5, 'Description is required'),
-  is_best_time: z.boolean().optional(),
+  is_best_time: z.string().optional().transform((val) => val === 'true'),
 });
 
 type WeatherFormData = z.infer<typeof weatherSchema>;
@@ -24,7 +24,11 @@ const columns: ColumnDef<Weather>[] = [
   {
     key: 'month',
     label: 'Month',
-    render: (value) => new Date(2024, value - 1).toLocaleDateString('en-US', { month: 'long' }),
+    render: (value) => {
+      const monthNum = Number(value);
+      if (!monthNum || monthNum < 1 || monthNum > 12) return String(value);
+      return new Date(2024, monthNum - 1).toLocaleDateString('en-US', { month: 'long' });
+    },
   },
   {
     key: 'avg_temp',
@@ -133,6 +137,19 @@ export default function WeatherPage() {
     },
   ];
 
+  // Convert Weather boolean to string for select field
+  const getDefaultValues = (weather: Weather | null): Partial<WeatherFormData> | undefined => {
+    if (!weather) return undefined;
+    
+    return {
+      destination_id: weather.destination_id,
+      month: weather.month,
+      avg_temp: weather.avg_temp,
+      description: weather.description,
+      is_best_time: weather.is_best_time ? 'true' : 'false',
+    } as any;
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -169,7 +186,7 @@ export default function WeatherPage() {
           <EntityForm
             title=""
             fields={formFields}
-            defaultValues={editingItem || undefined}
+            defaultValues={getDefaultValues(editingItem)}
             onSubmit={handleSubmit}
             isLoading={isSubmitting}
             error={submitError}

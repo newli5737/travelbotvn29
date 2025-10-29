@@ -142,6 +142,18 @@ export default function ToursPage() {
     },
   ];
 
+  // Convert Tour destinations array to comma-separated string for form
+  const getDefaultValues = (tour: Tour | null) => {
+    if (!tour) return undefined;
+    
+    return {
+      ...tour,
+      destinations: Array.isArray(tour.destinations) 
+        ? tour.destinations.join(', ')  // Convert array to string
+        : tour.destinations || '',
+    };
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -179,7 +191,7 @@ export default function ToursPage() {
           <EntityForm
             title=""
             fields={formFields}
-            defaultValues={editingItem || undefined}
+            defaultValues={getDefaultValues(editingItem)}
             onSubmit={handleSubmit}
             isLoading={isSubmitting}
             error={submitError}

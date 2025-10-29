@@ -4,7 +4,7 @@ import { ApiResponse } from '@/types';
 
 interface UseCRUDOptions<T> {
   endpoint: string;
-  onSuccess?: (data: T) => void;
+  onSuccess?: (data: T | T[]) => void;
   onError?: (error: Error) => void;
 }
 
@@ -38,7 +38,7 @@ export const useAdminCRUD = <T extends { id: string }>(
 
       if (response.data.data) {
         setData(response.data.data);
-        options.onSuccess?.(response.data.data as T);
+        options.onSuccess?.(response.data.data);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data';
@@ -62,6 +62,7 @@ export const useAdminCRUD = <T extends { id: string }>(
 
         if (response.data.data) {
           setData((prev) => [...prev, response.data.data as T]);
+          options.onSuccess?.(response.data.data);
           return response.data.data;
         }
         return null;
@@ -94,6 +95,7 @@ export const useAdminCRUD = <T extends { id: string }>(
               existing.id === id ? response.data.data as T : existing
             )
           );
+          options.onSuccess?.(response.data.data);
           return response.data.data;
         }
         return null;
