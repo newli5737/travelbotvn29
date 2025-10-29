@@ -28,7 +28,7 @@ export default function RestaurantsPage() {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to load restaurants'
+        err instanceof Error ? err.message : 'Không thể tải nhà hàng'
       );
     } finally {
       setIsLoading(false);
@@ -41,10 +41,10 @@ export default function RestaurantsPage() {
       <div className="bg-gradient-to-r from-ocean-blue to-ocean-light text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Discover Restaurants 🍽️
+            Khám Phá Nhà Hàng 🍽️
           </h1>
           <p className="text-lg opacity-90">
-            Experience amazing cuisine at recommended restaurants
+            Thưởng thức ẩm thực tuyệt vời tại các nhà hàng được khuyến nghị
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function RestaurantsPage() {
         ) : restaurants.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">
-              No restaurants found. Please try again later.
+              Không tìm thấy nhà hàng nào. Vui lòng thử lại sau.
             </p>
           </div>
         ) : (

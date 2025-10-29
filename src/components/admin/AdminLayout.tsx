@@ -25,15 +25,15 @@ interface AdminLayoutProps {
 }
 
 const menuItems = [
-  { href: '/admin/dashboard', icon: BarChart3, label: 'Dashboard' },
-  { href: '/admin/destinations', icon: Map, label: 'Destinations' },
-  { href: '/admin/hotels', icon: Hotel, label: 'Hotels' },
-  { href: '/admin/tours', icon: Compass, label: 'Tours' },
-  { href: '/admin/restaurants', icon: Utensils, label: 'Restaurants' },
-  { href: '/admin/activities', icon: Activity, label: 'Activities' },
-  { href: '/admin/weather', icon: Cloud, label: 'Weather' },
-  { href: '/admin/transportation', icon: Navigation, label: 'Transportation' },
-  { href: '/admin/reviews', icon: Star, label: 'Reviews' },
+  { href: '/admin/dashboard', icon: BarChart3, label: 'Bảng Điều Khiển' },
+  { href: '/admin/destinations', icon: Map, label: 'Điểm Đến' },
+  { href: '/admin/hotels', icon: Hotel, label: 'Khách Sạn' },
+  { href: '/admin/tours', icon: Compass, label: 'Tour Du Lịch' },
+  { href: '/admin/restaurants', icon: Utensils, label: 'Nhà Hàng' },
+  { href: '/admin/activities', icon: Activity, label: 'Hoạt Động' },
+  { href: '/admin/weather', icon: Cloud, label: 'Thời Tiết' },
+  { href: '/admin/transportation', icon: Navigation, label: 'Vận Tải' },
+  { href: '/admin/reviews', icon: Star, label: 'Bình Luận' },
 ];
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
@@ -70,7 +70,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="p-6 border-b border-gray-700">
           <Link href="/admin/dashboard" className="flex items-center gap-2">
             <div className="text-2xl">🧳</div>
-            <span className="text-lg font-bold">Travelbot Admin</span>
+            <span className="text-lg font-bold">Du Lịch AI - Quản Trị</span>
           </Link>
         </div>
 
@@ -110,7 +110,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             className="w-full text-white border-gray-600 hover:bg-gray-700"
           >
             <LogOut className="w-4 h-4 mr-2" />
-            Logout
+            Đăng Xuất
           </Button>
         </div>
       </aside>
@@ -126,7 +126,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <Menu className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Admin Panel
+            Bảng Điều Khiển Quản Trị
           </h1>
         </header>
 

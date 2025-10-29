@@ -21,7 +21,7 @@ export default function LoginPage() {
     setLocalError('');
 
     if (!email || !password) {
-      setLocalError('Please fill in all fields');
+      setLocalError('Vui lòng điền vào tất cả các trường');
       return;
     }
 
@@ -37,9 +37,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-ocean-blue to-ocean-light flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl">Admin Login</CardTitle>
+          <CardTitle className="text-2xl">Đăng Nhập Quản Trị Viên</CardTitle>
           <CardDescription>
-            Sign in to your Travelbot admin account
+            Đăng nhập vào tài khoản quản trị viên Du Lịch AI của bạn
           </CardDescription>
         </CardHeader>
 
@@ -57,7 +57,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@travelbot.com"
+                placeholder="admin@dulichai.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -65,7 +65,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Mật Khẩu</Label>
               <Input
                 id="password"
                 type="password"
@@ -84,18 +84,18 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Signing in...
+                  Đang đăng nhập...
                 </>
               ) : (
-                'Sign In'
+                'Đăng Nhập'
               )}
             </Button>
           </form>
 
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg text-sm text-gray-700 dark:text-gray-300">
-            <p className="font-semibold mb-2">Demo Credentials:</p>
+            <p className="font-semibold mb-2">Thông Tin Đăng Nhập Demo:</p>
             <p>Email: admin@example.com</p>
-            <p>Password: password123</p>
+            <p>Mật Khẩu: password123</p>
           </div>
         </CardContent>
       </Card>
