@@ -47,7 +47,7 @@ export default function ReviewsPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAdd = () => {
     setEditingItem(null);

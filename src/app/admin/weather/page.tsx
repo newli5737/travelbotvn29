@@ -50,7 +50,7 @@ export default function WeatherPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAdd = () => {
     setEditingItem(null);

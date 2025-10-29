@@ -42,7 +42,7 @@ export default function ActivitiesPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAdd = () => {
     setEditingItem(null);
