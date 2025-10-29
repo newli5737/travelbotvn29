@@ -22,8 +22,8 @@ interface FormField {
 interface EntityFormProps {
   title: string;
   fields: FormField[];
-  defaultValues?: Record<string, any>;
-  onSubmit: (data: Record<string, any>) => Promise<void>;
+  defaultValues?: Record<string, string | number | boolean | undefined>;
+  onSubmit: (data: Record<string, string | number | boolean | undefined>) => Promise<void>;
   isLoading?: boolean;
   error?: string | null;
   onCancel?: () => void;

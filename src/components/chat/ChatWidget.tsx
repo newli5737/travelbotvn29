@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { X, MessageCircle } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
 import { useUIStore } from '@/store/uiStore';

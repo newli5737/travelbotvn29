@@ -51,7 +51,7 @@ export default function ToursPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAdd = () => {
     setEditingItem(null);

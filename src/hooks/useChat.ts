@@ -60,7 +60,7 @@ export const useChat = () => {
           }
         };
 
-        wsRef.current.onerror = (error: Event) => {
+        wsRef.current.onerror = () => {
           isConnectingRef.current = false;
           // Only log first error and every 5th attempt to reduce console spam
           if (reconnectAttemptsRef.current === 0 || reconnectAttemptsRef.current % 5 === 0) {
@@ -89,7 +89,7 @@ export const useChat = () => {
             store.setError('Chat service unavailable. Please refresh the page or try again later.');
           }
         };
-      } catch (error) {
+      } catch {
         isConnectingRef.current = false;
         if (reconnectAttemptsRef.current === 0) {
           console.error('Failed to initialize WebSocket connection');

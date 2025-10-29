@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tour } from '@/types';
 import { MapPin, Calendar, DollarSign } from 'lucide-react';
@@ -13,11 +14,12 @@ export const TourCard: React.FC<TourCardProps> = ({ tour }) => {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
       {tour.image_url && (
-        <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
-          <img
+        <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden relative">
+          <Image
             src={tour.image_url}
             alt={tour.name}
-            className="w-full h-full object-cover hover:scale-105 transition-transform"
+            fill
+            className="object-cover hover:scale-105 transition-transform"
           />
         </div>
       )}

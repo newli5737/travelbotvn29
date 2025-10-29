@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export interface ColumnDef<T> {
   key: keyof T;
   label: string;
-  render?: (value: any) => React.ReactNode;
+  render?: (value: T[keyof T]) => React.ReactNode;
   width?: string;
 }
 
@@ -35,7 +35,7 @@ interface DataTableProps<T extends { id: string }> {
 
 export const DataTable = React.forwardRef<
   HTMLDivElement,
-  DataTableProps<any>
+  DataTableProps<{ id: string }>
 >(
   (
     {

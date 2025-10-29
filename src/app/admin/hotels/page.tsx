@@ -49,7 +49,7 @@ export default function HotelsPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAdd = () => {
     setEditingItem(null);
