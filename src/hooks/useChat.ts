@@ -47,8 +47,10 @@ export const useChat = () => {
         };
 
         wsRef.current.onerror = (error: Event) => {
-          console.error('WebSocket error:', error);
-          store.setError('Connection error. Please try again.');
+          console.error('WebSocket error event:', error);
+          console.error('WebSocket readyState:', wsRef.current?.readyState);
+          console.error('WebSocket URL:', wsRef.current?.url);
+          store.setError('Failed to connect to chat service. Please check your connection.');
         };
 
         wsRef.current.onclose = () => {
