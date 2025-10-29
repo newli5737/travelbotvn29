@@ -10,13 +10,13 @@ import { Destination } from '@/types';
 import { z } from 'zod';
 
 const destinationSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  province: z.string().min(2, 'Province is required'),
-  region: z.string().min(2, 'Region is required'),
-  rating: z.coerce.number().min(0).max(5, 'Rating must be between 0 and 5'),
-  best_time_to_visit: z.string().min(2, 'Best time to visit is required'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  name: z.string().min(2, 'Tên phải có ít nhất 2 ký tự'),
+  province: z.string().min(2, 'Tỉnh/Thành Phố là bắt buộc'),
+  region: z.string().min(2, 'Khu Vực là bắt buộc'),
+  rating: z.coerce.number().min(0).max(5, 'Đánh giá phải từ 0 đến 5'),
+  best_time_to_visit: z.string().min(2, 'Thời gian tốt nhất là bắt buộc'),
+  description: z.string().min(10, 'Mô tả phải có ít nhất 10 ký tự'),
+  image_url: z.string().url('Phải là một URL hợp lệ').optional().or(z.literal('')),
 });
 
 type DestinationFormData = z.infer<typeof destinationSchema>;
