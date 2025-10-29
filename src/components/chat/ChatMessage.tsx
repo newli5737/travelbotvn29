@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import { ChatMessage as ChatMessageType } from '@/types';
 
 interface ChatMessageProps {
