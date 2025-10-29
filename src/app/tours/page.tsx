@@ -25,7 +25,7 @@ export default function ToursPage() {
         setTours(response.data.data);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load tours');
+      setError(err instanceof Error ? err.message : 'Không thể tải tour du lịch');
     } finally {
       setIsLoading(false);
     }
@@ -37,10 +37,10 @@ export default function ToursPage() {
       <div className="bg-gradient-to-r from-ocean-blue to-ocean-light text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Discover Tours ✈️
+            Khám Phá Tour Du Lịch ✈️
           </h1>
           <p className="text-lg opacity-90">
-            Browse our curated collection of amazing tour packages
+            Duyệt qua bộ sưu tập tour du lịch tuyệt vời được lựa chọn cẩn thận
           </p>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function ToursPage() {
         ) : tours.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">
-              No tours found. Please try again later.
+              Không tìm thấy tour nào. Vui lòng thử lại sau.
             </p>
           </div>
         ) : (
