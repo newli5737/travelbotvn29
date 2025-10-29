@@ -10,13 +10,13 @@ import { Hotel } from '@/types';
 import { z } from 'zod';
 
 const hotelSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  destination_id: z.string().min(1, 'Destination is required'),
-  star_rating: z.coerce.number().min(1).max(5, 'Star rating must be between 1 and 5'),
-  price_range: z.string().min(1, 'Price range is required'),
-  rating: z.coerce.number().min(0).max(5, 'Rating must be between 0 and 5'),
+  name: z.string().min(2, 'Tên phải có ít nhất 2 ký tự'),
+  destination_id: z.string().min(1, 'Điểm đến là bắt buộc'),
+  star_rating: z.coerce.number().min(1).max(5, 'Xếp hạng sao phải từ 1 đến 5'),
+  price_range: z.string().min(1, 'Phạm vi giá là bắt buộc'),
+  rating: z.coerce.number().min(0).max(5, 'Đánh giá phải từ 0 đến 5'),
   amenities: z.string().optional(),
-  image_url: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  image_url: z.string().url('Phải là một URL hợp lệ').optional().or(z.literal('')),
 });
 
 type HotelFormData = z.infer<typeof hotelSchema>;
