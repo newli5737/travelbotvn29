@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { TourCard } from '@/components/cards/TourCard';
-import { Tour, ApiResponse } from '@/types';
+import { Tour } from '@/types';
 import axiosClient from '@/lib/axiosClient';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
@@ -20,9 +20,13 @@ export default function ToursPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axiosClient.get<ApiResponse<Tour[]>>('/tours');
-      if (response.data.data) {
+      const response = await axiosClient.get('/tours');
+      if (Array.isArray(response.data.data)) {
         setTours(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setTours(response.data);
+      } else {
+        setTours([]);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể tải tour du lịch');
@@ -33,7 +37,6 @@ export default function ToursPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-background">
-      {/* Header */}
       <div className="bg-gradient-to-r from-ocean-blue to-ocean-light text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -45,7 +48,6 @@ export default function ToursPage() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         {error && (
           <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-lg mb-8 flex items-center gap-3">
@@ -69,8 +71,20 @@ export default function ToursPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tours.map((tour) => (
-              <TourCard key={tour.id} tour={tour} />
+              <TourCard
+                key={tour.id}
+                tour={{
+                  ...tour,
+                  destinations:
+                    typeof tour.destinations === 'string'
+                      ? [tour.destinations]
+                      : Array.isArray(tour.destinations)
+                        ? tour.destinations
+                        : [],
+                }}
+              />
             ))}
+
           </div>
         )}
       </div>

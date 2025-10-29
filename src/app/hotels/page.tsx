@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { HotelCard } from '@/components/cards/HotelCard';
-import { Hotel, ApiResponse } from '@/types';
+import { Hotel } from '@/types';
 import axiosClient from '@/lib/axiosClient';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
@@ -20,10 +20,17 @@ export default function HotelsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axiosClient.get<ApiResponse<Hotel[]>>('/hotels');
-      if (response.data.data) {
-        setHotels(response.data.data);
+
+      const response = await axiosClient.get<Hotel[]>('/hotels');
+      console.log('Response:', response.data);
+
+      if (Array.isArray(response.data)) {
+        setHotels(response.data);
+      } else {
+        console.warn('Unexpected response format:', response.data);
+        setHotels([]);
       }
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể tải khách sạn');
     } finally {

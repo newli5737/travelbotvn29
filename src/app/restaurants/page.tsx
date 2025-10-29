@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { RestaurantCard } from '@/components/cards/RestaurantCard';
-import { Restaurant, ApiResponse } from '@/types';
+import { Restaurant } from '@/types';
 import axiosClient from '@/lib/axiosClient';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
@@ -20,12 +20,18 @@ export default function RestaurantsPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axiosClient.get<ApiResponse<Restaurant[]>>(
-        '/restaurants'
-      );
-      if (response.data.data) {
-        setRestaurants(response.data.data);
+
+      // Gọi API, response trả về trực tiếp là mảng
+      const response = await axiosClient.get<Restaurant[]>('/restaurants');
+      console.log('Response:', response.data);
+
+      if (Array.isArray(response.data)) {
+        setRestaurants(response.data);
+      } else {
+        console.warn('Unexpected response format:', response.data);
+        setRestaurants([]);
       }
+
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Không thể tải nhà hàng'

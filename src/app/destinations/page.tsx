@@ -22,7 +22,7 @@ export default function DestinationsPage() {
       setError(null);
 
       const response = await axiosClient.get<Destination[]>('/destinations/');
-      console.log('Response:', response.data);
+      // console.log('Response:', response.data);
 
       if (Array.isArray(response.data)) {
         setDestinations(response.data);

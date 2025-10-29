@@ -2,7 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Tour } from '@/types';
 import { MapPin, Calendar, DollarSign } from 'lucide-react';
 
@@ -11,6 +17,18 @@ interface TourCardProps {
 }
 
 export const TourCard: React.FC<TourCardProps> = ({ tour }) => {
+  const formatDestinations = (d: any) => {
+    if (!d) return '';
+    if (typeof d === 'string') return d;
+    if (Array.isArray(d)) {
+      if (d.every((item) => typeof item === 'string')) return d.join(', ');
+      return d
+        .map((item) => item?.name ?? item?.title ?? String(item))
+        .join(', ');
+    }
+    return String(d);
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
       {tour.image_url && (
@@ -27,7 +45,7 @@ export const TourCard: React.FC<TourCardProps> = ({ tour }) => {
         <CardTitle className="text-lg">{tour.name}</CardTitle>
         <CardDescription className="flex items-center gap-1">
           <MapPin className="w-4 h-4" />
-          {tour.destinations?.join(', ')}
+          {formatDestinations(tour.destinations)}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -38,16 +56,20 @@ export const TourCard: React.FC<TourCardProps> = ({ tour }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="w-4 h-4 text-ocean-blue" />
-              <span>{tour.duration_days} days</span>
+              <span>
+                {tour.duration_days
+                  ? `${tour.duration_days} ngày`
+                  : 'Không rõ thời lượng'}
+              </span>
             </div>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Price per person:
+              Giá mỗi người:
             </span>
             <span className="flex items-center gap-1 font-semibold text-sand-yellow text-lg">
               <DollarSign className="w-4 h-4" />
-              {tour.price}
+              {tour.price ?? 'Liên hệ'}
             </span>
           </div>
         </div>
