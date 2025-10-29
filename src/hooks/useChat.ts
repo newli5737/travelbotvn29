@@ -59,8 +59,10 @@ export const useChat = () => {
           setTimeout(connectWebSocket, 3000);
         };
       } catch (error) {
-        console.error('Failed to connect WebSocket:', error);
-        store.setError('Failed to connect to chat service');
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        console.error('Failed to initialize WebSocket connection:', errorMsg);
+        console.log('WebSocket URL attempted:', process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001');
+        store.setError('Chat service unavailable. Make sure the server is running.');
       }
     };
 
