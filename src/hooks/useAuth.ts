@@ -26,6 +26,7 @@ export const useAuth = () => {
   const store = useAuthStore();
 
   // Initialize from localStorage on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     store.initializeFromStorage();
   }, []);
@@ -63,6 +64,7 @@ export const useAuth = () => {
     store.logout();
   }, [store]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateUser = useCallback(
     (user: AuthUser) => {
       store.setUser(user);
