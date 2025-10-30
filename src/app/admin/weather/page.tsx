@@ -14,7 +14,7 @@ const weatherSchema = z.object({
   month: z.coerce.number().min(1).max(12, 'Month must be between 1 and 12'),
   avg_temp: z.coerce.number().min(-50).max(60, 'Temperature must be realistic'),
   description: z.string().min(5, 'Description is required'),
-  is_best_time: z.boolean().optional(),
+  is_best_time: z.boolean().default(false),
 });
 
 type WeatherFormData = z.infer<typeof weatherSchema>;

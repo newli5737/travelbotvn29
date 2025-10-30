@@ -13,7 +13,7 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 interface FormField {
   name: string;
   label: string;
-  type?: 'text' | 'email' | 'number' | 'textarea' | 'select';
+  type?: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'checkbox';
   placeholder?: string;
   required?: boolean;
   options?: { value: string; label: string }[];
@@ -43,7 +43,7 @@ export function EntityForm<T extends z.ZodTypeAny>({
   type FormData = z.infer<T> & FieldValues;
   
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema) as any,
+    resolver: zodResolver(schema as any),
     defaultValues: defaultValues as any,
   });
 
@@ -94,6 +94,17 @@ export function EntityForm<T extends z.ZodTypeAny>({
                     </option>
                   ))}
                 </select>
+              ) : field.type === 'checkbox' ? (
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    id={field.name}
+                    type="checkbox"
+                    disabled={isLoading}
+                    className="w-4 h-4 rounded border border-input bg-background cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                    {...register(field.name as any)}
+                  />
+                  <span className="text-sm text-muted-foreground">Mark as best time</span>
+                </label>
               ) : (
                 <Input
                   id={field.name}
