@@ -33,7 +33,7 @@ export const useAdminCRUD = <T extends { id: string }>(
       setError(null);
 
       const response = await axiosClient.get<ApiResponse<T[]>>(
-        `/admin/${options.endpoint}`
+        `/${options.endpoint}`
       );
 
       if (response.data.data) {
@@ -56,7 +56,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.post<ApiResponse<T>>(
-          `/admin/${options.endpoint}`,
+          `/${options.endpoint}`,
           item
         );
 
@@ -85,7 +85,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.put<ApiResponse<T>>(
-          `/admin/${options.endpoint}/${id}`,
+          `/${options.endpoint}/${id}`,
           item
         );
 
@@ -117,7 +117,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        await axiosClient.delete(`/admin/${options.endpoint}/${id}`);
+        await axiosClient.delete(`/${options.endpoint}/${id}`);
         setData((prev) => prev.filter((item) => item.id !== id));
         return true;
       } catch (err) {
