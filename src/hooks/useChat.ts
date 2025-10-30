@@ -71,7 +71,7 @@ export const useChat = () => {
 
         wsRef.current.onmessage = (event: MessageEvent<string>) => {
           if (!isMountedRef.current) return;
-          
+
           try {
             const message: WebSocketMessage = JSON.parse(event.data);
 
@@ -91,17 +91,35 @@ export const useChat = () => {
             }
 
             if (message.type === 'message') {
-              const chatMessage: ChatMessage = {
-                id: Date.now().toString(),
-                sender: 'bot',
-                content: message.content || '',
-                timestamp: new Date().toISOString(),
-                metadata: {
-                  intent: message.intent,
-                  data: message.data,
-                },
-              };
-              addMessage(chatMessage);
+              // Buffer the bot response
+              botResponseBufferRef.current += (message.content || '');
+              if (message.intent) {
+                botResponseMetadataRef.current.intent = message.intent;
+              }
+              if (message.data) {
+                botResponseMetadataRef.current.data = message.data;
+              }
+
+              // Clear existing timeout
+              if (botResponseTimeoutRef.current) {
+                clearTimeout(botResponseTimeoutRef.current);
+              }
+
+              // Set timeout to flush buffer after 500ms of no new messages
+              botResponseTimeoutRef.current = setTimeout(() => {
+                if (botResponseBufferRef.current && isMountedRef.current) {
+                  const chatMessage: ChatMessage = {
+                    id: Date.now().toString(),
+                    sender: 'bot',
+                    content: botResponseBufferRef.current,
+                    timestamp: new Date().toISOString(),
+                    metadata: botResponseMetadataRef.current,
+                  };
+                  addMessage(chatMessage);
+                  botResponseBufferRef.current = '';
+                  botResponseMetadataRef.current = {};
+                }
+              }, 500);
             }
           } catch (error) {
             console.error('Error parsing WebSocket message:', error);
