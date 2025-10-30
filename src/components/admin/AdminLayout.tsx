@@ -16,6 +16,7 @@ import {
   Navigation,
   Star,
   LogOut,
+  Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
