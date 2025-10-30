@@ -1,17 +1,26 @@
 import { useCallback, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { AuthUser } from '@/types';
-import axiosClient from '@/lib/axiosClient';
 
 interface LoginCredentials {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  user: AuthUser;
-  token: string;
-}
+const ADMIN_ACCOUNT = {
+  email: 'admin@example.com',
+  password: 'password123',
+};
+
+const ADMIN_USER: AuthUser = {
+  id: 'admin-001',
+  email: 'admin@example.com',
+  name: 'Admin',
+  role: 'admin',
+  created_at: new Date().toISOString(),
+};
+
+const ADMIN_TOKEN = 'admin-token-12345';
 
 export const useAuth = () => {
   const store = useAuthStore();
@@ -27,11 +36,16 @@ export const useAuth = () => {
         store.setLoading(true);
         store.setError(null);
 
-        const response = await axiosClient.post<LoginResponse>('/auth/login', credentials);
-        
-        if (response.data) {
-          store.login(response.data.user, response.data.token);
+        // Check against hardcoded admin account
+        if (
+          credentials.email === ADMIN_ACCOUNT.email &&
+          credentials.password === ADMIN_ACCOUNT.password
+        ) {
+          store.login(ADMIN_USER, ADMIN_TOKEN);
           return true;
+        } else {
+          store.setError('Invalid email or password');
+          return false;
         }
       } catch (error) {
         const errorMessage =

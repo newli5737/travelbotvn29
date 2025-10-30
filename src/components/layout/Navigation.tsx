@@ -17,7 +17,6 @@ const navLinks: NavLink[] = [
   { href: '/hotels', label: 'Khách Sạn' },
   { href: '/restaurants', label: 'Nhà Hàng' },
   { href: '/about', label: 'Về Chúng Tôi' },
-  { href: '/admin/login', label: 'Quản Trị' },
 ];
 
 export const Navigation: React.FC = () => {
