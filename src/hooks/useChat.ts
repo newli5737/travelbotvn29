@@ -188,7 +188,7 @@ export const useChat = () => {
         wsRef.current = null;
       }
     };
-  }, []); 
+  }, [addMessage, setError, setLoading]); 
 
   const sendMessage = useCallback(
     async (content: string) => {
