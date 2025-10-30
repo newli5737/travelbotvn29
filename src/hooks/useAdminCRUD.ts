@@ -27,13 +27,18 @@ export const useAdminCRUD = <T extends { id: string }>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Extract stable values from options to avoid unnecessary updates
+  const endpoint = options.endpoint;
+  const onSuccess = options.onSuccess;
+  const onError = options.onError;
+
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
       const response = await axiosClient.get<T[] | ApiResponse<T[]>>(
-        `/${options.endpoint}/`
+        `/${endpoint}/`
       );
 
       // Handle both response formats: T[] or ApiResponse<T[]>
@@ -42,15 +47,15 @@ export const useAdminCRUD = <T extends { id: string }>(
         : response.data.data || [];
 
       setData(dataArray);
-      options.onSuccess?.(dataArray);
+      onSuccess?.(dataArray);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data';
       setError(errorMessage);
-      options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+      onError?.(err instanceof Error ? err : new Error(errorMessage));
     } finally {
       setIsLoading(false);
     }
-  }, [options]);
+  }, [endpoint, onSuccess, onError]);
 
   const createItem = useCallback(
     async (item: Omit<T, 'id'>): Promise<T | null> => {
@@ -59,7 +64,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.post<T | ApiResponse<T>>(
-          `/${options.endpoint}/`,
+          `/${endpoint}/`,
           item
         );
 
@@ -68,20 +73,20 @@ export const useAdminCRUD = <T extends { id: string }>(
 
         if (newItem && newItem.id) {
           setData((prev) => [...prev, newItem as T]);
-          options.onSuccess?.(newItem);
+          onSuccess?.(newItem);
           return newItem as T;
         }
         return null;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to create item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onSuccess, onError]
   );
 
   const updateItem = useCallback(
@@ -91,7 +96,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.put<T | ApiResponse<T>>(
-          `/${options.endpoint}/${id}/`,
+          `/${endpoint}/${id}/`,
           item
         );
 
@@ -104,20 +109,20 @@ export const useAdminCRUD = <T extends { id: string }>(
               existing.id === id ? updatedItem as T : existing
             )
           );
-          options.onSuccess?.(updatedItem);
+          onSuccess?.(updatedItem);
           return updatedItem as T;
         }
         return null;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to update item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onSuccess, onError]
   );
 
   const deleteItem = useCallback(
@@ -126,19 +131,19 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        await axiosClient.delete(`/${options.endpoint}/${id}/`);
+        await axiosClient.delete(`/${endpoint}/${id}/`);
         setData((prev) => prev.filter((item) => item.id !== id));
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to delete item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onError]
   );
 
   const clearError = useCallback(() => {
