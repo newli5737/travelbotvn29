@@ -12,7 +12,6 @@ export const ChatWidget: React.FC = () => {
   const { messages, isLoading, error, sendMessage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

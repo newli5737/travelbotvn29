@@ -142,14 +142,13 @@ export default function ToursPage() {
     },
   ];
 
-  // Convert Tour destinations array to comma-separated string for form
   const getDefaultValues = (tour: Tour | null) => {
     if (!tour) return undefined;
     
     return {
       ...tour,
       destinations: Array.isArray(tour.destinations) 
-        ? tour.destinations.join(', ')  // Convert array to string
+        ? tour.destinations.join(', ')  
         : tour.destinations || '',
     };
   };

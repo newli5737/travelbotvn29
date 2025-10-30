@@ -21,7 +21,6 @@ export default function RestaurantsPage() {
       setIsLoading(true);
       setError(null);
 
-      // Gọi API, response trả về trực tiếp là mảng
       const response = await axiosClient.get<Restaurant[]>('/restaurants');
       console.log('Response:', response.data);
 

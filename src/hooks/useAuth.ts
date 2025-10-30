@@ -37,7 +37,6 @@ export const useAuth = () => {
     initializeFromStorage,
   } = useAuthStore();
 
-  // Initialize from localStorage on mount
   useEffect(() => {
     initializeFromStorage();
   }, [initializeFromStorage]);
@@ -48,7 +47,6 @@ export const useAuth = () => {
         setLoading(true);
         setError(null);
 
-        // Check against hardcoded admin account
         if (
           credentials.email === ADMIN_ACCOUNT.email &&
           credentials.password === ADMIN_ACCOUNT.password

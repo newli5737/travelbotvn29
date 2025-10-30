@@ -20,7 +20,6 @@ interface UseCRUDReturn<T> {
   clearError: () => void;
 }
 
-// Type guard để kiểm tra response có field "data"
 function isApiResponse<U>(obj: unknown): obj is ApiResponse<U> {
   return (
     typeof obj === 'object' &&

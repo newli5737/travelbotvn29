@@ -145,7 +145,6 @@ export default function HotelsPage() {
     },
   ];
 
-  // Convert Hotel amenities array to comma-separated string for form
   const getDefaultValues = (hotel: Hotel | null) => {
     if (!hotel) return undefined;
     

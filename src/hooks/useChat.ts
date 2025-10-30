@@ -33,7 +33,6 @@ export const useChat = () => {
     data?: unknown;
   }>({}); 
 
-  // Initialize WebSocket connection
   useEffect(() => {
     isMountedRef.current = true;
 
@@ -91,7 +90,7 @@ export const useChat = () => {
             }
 
             if (message.type === 'message') {
-              // Buffer the bot response
+              
               botResponseBufferRef.current += (message.content || '');
               if (message.intent) {
                 botResponseMetadataRef.current.intent = message.intent;
@@ -100,12 +99,10 @@ export const useChat = () => {
                 botResponseMetadataRef.current.data = message.data;
               }
 
-              // Clear existing timeout
               if (botResponseTimeoutRef.current) {
                 clearTimeout(botResponseTimeoutRef.current);
               }
 
-              // Set timeout to flush buffer after 500ms of no new messages
               botResponseTimeoutRef.current = setTimeout(() => {
                 if (botResponseBufferRef.current && isMountedRef.current) {
                   const chatMessage: ChatMessage = {
