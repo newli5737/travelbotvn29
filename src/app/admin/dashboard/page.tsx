@@ -51,12 +51,12 @@ export default function DashboardPage() {
 
       const [destinationsRes, hotelsRes, toursRes, restaurantsRes, activitiesRes, reviewsRes] =
         await Promise.all([
-          axiosClient.get<ApiResponse<unknown[]>>('/destinations'),
-          axiosClient.get<ApiResponse<unknown[]>>('/hotels'),
-          axiosClient.get<ApiResponse<unknown[]>>('/tours'),
-          axiosClient.get<ApiResponse<unknown[]>>('/restaurants'),
-          axiosClient.get<ApiResponse<unknown[]>>('/activities'),
-          axiosClient.get<ApiResponse<unknown[]>>('/reviews'),
+          axiosClient.get<ApiResponse<unknown[]>>('/destinations/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/hotels/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/tours/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/restaurants/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/activities/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/reviews/'),
         ]).catch((error) => {
           console.error('Failed to fetch stats:', error);
           return [

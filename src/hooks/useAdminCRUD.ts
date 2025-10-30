@@ -33,7 +33,7 @@ export const useAdminCRUD = <T extends { id: string }>(
       setError(null);
 
       const response = await axiosClient.get<T[] | ApiResponse<T[]>>(
-        `/${options.endpoint}`
+        `/${options.endpoint}/`
       );
 
       // Handle both response formats: T[] or ApiResponse<T[]>
@@ -59,7 +59,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.post<T | ApiResponse<T>>(
-          `/${options.endpoint}`,
+          `/${options.endpoint}/`,
           item
         );
 
@@ -91,7 +91,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setIsLoading(true);
 
         const response = await axiosClient.put<T | ApiResponse<T>>(
-          `/${options.endpoint}/${id}`,
+          `/${options.endpoint}/${id}/`,
           item
         );
 
@@ -126,7 +126,7 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        await axiosClient.delete(`/${options.endpoint}/${id}`);
+        await axiosClient.delete(`/${options.endpoint}/${id}/`);
         setData((prev) => prev.filter((item) => item.id !== id));
         return true;
       } catch (err) {
