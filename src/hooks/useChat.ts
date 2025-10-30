@@ -25,7 +25,13 @@ export const useChat = () => {
   const maxReconnectAttemptsRef = useRef<number>(5);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isConnectingRef = useRef<boolean>(false);
-  const isMountedRef = useRef<boolean>(true); 
+  const isMountedRef = useRef<boolean>(true);
+  const botResponseBufferRef = useRef<string>('');
+  const botResponseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const botResponseMetadataRef = useRef<{
+    intent?: string;
+    data?: unknown;
+  }>({}); 
 
   // Initialize WebSocket connection
   useEffect(() => {
