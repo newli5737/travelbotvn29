@@ -23,53 +23,64 @@ const ADMIN_USER: AuthUser = {
 const ADMIN_TOKEN = 'admin-token-12345';
 
 export const useAuth = () => {
-  const store = useAuthStore();
+  const {
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    error,
+    setUser,
+    setToken,
+    setLoading,
+    setError,
+    logout: storeLogout,
+    login: storeLogin,
+    initializeFromStorage,
+  } = useAuthStore();
 
   // Initialize from localStorage on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    store.initializeFromStorage();
-  }, []);
+    initializeFromStorage();
+  }, [initializeFromStorage]);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {
       try {
-        store.setLoading(true);
-        store.setError(null);
+        setLoading(true);
+        setError(null);
 
         // Check against hardcoded admin account
         if (
           credentials.email === ADMIN_ACCOUNT.email &&
           credentials.password === ADMIN_ACCOUNT.password
         ) {
-          store.login(ADMIN_USER, ADMIN_TOKEN);
+          storeLogin(ADMIN_USER, ADMIN_TOKEN);
           return true;
         } else {
-          store.setError('Invalid email or password');
+          setError('Invalid email or password');
           return false;
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Login failed. Please try again.';
-        store.setError(errorMessage);
+        setError(errorMessage);
         return false;
       } finally {
-        store.setLoading(false);
+        setLoading(false);
       }
     },
-    [store]
+    [setLoading, setError, storeLogin]
   );
 
   const logout = useCallback(() => {
-    store.logout();
-  }, [store]);
+    storeLogout();
+  }, [storeLogout]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateUser = useCallback(
-    (user: AuthUser) => {
-      store.setUser(user);
+    (authUser: AuthUser) => {
+      setUser(authUser);
     },
-    []
+    [setUser]
   );
 
   return {
