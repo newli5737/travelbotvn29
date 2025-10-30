@@ -30,7 +30,6 @@ export const useAuth = () => {
     isLoading,
     error,
     setUser,
-    setToken,
     setLoading,
     setError,
     logout: storeLogout,
