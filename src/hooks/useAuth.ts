@@ -84,11 +84,11 @@ export const useAuth = () => {
   );
 
   return {
-    user: store.user,
-    token: store.token,
-    isAuthenticated: store.isAuthenticated,
-    isLoading: store.isLoading,
-    error: store.error,
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    error,
     login,
     logout,
     updateUser,
