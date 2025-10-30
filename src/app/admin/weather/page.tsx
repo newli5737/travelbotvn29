@@ -14,7 +14,7 @@ const weatherSchema = z.object({
   month: z.coerce.number().min(1).max(12, 'Month must be between 1 and 12'),
   avg_temp: z.coerce.number().min(-50).max(60, 'Temperature must be realistic'),
   description: z.string().min(5, 'Description is required'),
-  is_best_time: z.string().optional().transform((val) => val === 'true'),
+  is_best_time: z.boolean().optional(),
 });
 
 type WeatherFormData = z.infer<typeof weatherSchema>;
@@ -38,7 +38,7 @@ const columns: ColumnDef<Weather>[] = [
   {
     key: 'is_best_time',
     label: 'Best Time',
-    render: (value) => value ? '✓ Yes' : 'No',
+    render: (value) => (value ? '✓ Yes' : 'No'),
   },
 ];
 
@@ -129,15 +129,10 @@ export default function WeatherPage() {
     {
       name: 'is_best_time',
       label: 'Best Time to Visit',
-      type: 'select' as const,
-      options: [
-        { value: 'true', label: 'Yes' },
-        { value: 'false', label: 'No' },
-      ],
+      type: 'checkbox' as const,
     },
   ];
 
-  // Convert Weather boolean to string for select field
   const getDefaultValues = (weather: Weather | null): Partial<WeatherFormData> | undefined => {
     if (!weather) return undefined;
 
@@ -146,7 +141,7 @@ export default function WeatherPage() {
       month: weather.month,
       avg_temp: weather.avg_temp,
       description: weather.description,
-      is_best_time: weather.is_best_time ? 'true' : 'false',
+      is_best_time: weather.is_best_time,
     };
   };
 
