@@ -57,8 +57,7 @@ export default function Home() {
             <Link href="/about">
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="bg-sand-yellow text-white hover:bg-sand-light font-semibold"
               >
                 Tìm Hiểu Thêm
               </Button>

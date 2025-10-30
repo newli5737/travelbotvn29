@@ -1,67 +1,93 @@
 import { useCallback, useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { AuthUser } from '@/types';
-import axiosClient from '@/lib/axiosClient';
 
 interface LoginCredentials {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  user: AuthUser;
-  token: string;
-}
+const ADMIN_ACCOUNT = {
+  email: 'admin@example.com',
+  password: 'password123',
+};
+
+const ADMIN_USER: AuthUser = {
+  id: 'admin-001',
+  email: 'admin@example.com',
+  name: 'Admin',
+  role: 'admin',
+  created_at: new Date().toISOString(),
+};
+
+const ADMIN_TOKEN = 'admin-token-12345';
 
 export const useAuth = () => {
-  const store = useAuthStore();
+  const {
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    error,
+    setUser,
+    setLoading,
+    setError,
+    logout: storeLogout,
+    login: storeLogin,
+    initializeFromStorage,
+  } = useAuthStore();
 
   // Initialize from localStorage on mount
   useEffect(() => {
-    store.initializeFromStorage();
-  }, [store]);
+    initializeFromStorage();
+  }, [initializeFromStorage]);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {
       try {
-        store.setLoading(true);
-        store.setError(null);
+        setLoading(true);
+        setError(null);
 
-        const response = await axiosClient.post<LoginResponse>('/auth/login', credentials);
-        
-        if (response.data) {
-          store.login(response.data.user, response.data.token);
+        // Check against hardcoded admin account
+        if (
+          credentials.email === ADMIN_ACCOUNT.email &&
+          credentials.password === ADMIN_ACCOUNT.password
+        ) {
+          storeLogin(ADMIN_USER, ADMIN_TOKEN);
           return true;
+        } else {
+          setError('Invalid email or password');
+          return false;
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Login failed. Please try again.';
-        store.setError(errorMessage);
+        setError(errorMessage);
         return false;
       } finally {
-        store.setLoading(false);
+        setLoading(false);
       }
     },
-    [store]
+    [setLoading, setError, storeLogin]
   );
 
   const logout = useCallback(() => {
-    store.logout();
-  }, [store]);
+    storeLogout();
+  }, [storeLogout]);
 
   const updateUser = useCallback(
-    (user: AuthUser) => {
-      store.setUser(user);
+    (authUser: AuthUser) => {
+      setUser(authUser);
     },
-    [store]
+    [setUser]
   );
 
   return {
-    user: store.user,
-    token: store.token,
-    isAuthenticated: store.isAuthenticated,
-    isLoading: store.isLoading,
-    error: store.error,
+    user,
+    token,
+    isAuthenticated,
+    isLoading,
+    error,
     login,
     logout,
     updateUser,

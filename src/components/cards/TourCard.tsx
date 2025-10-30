@@ -17,12 +17,12 @@ interface TourCardProps {
 }
 
 export const TourCard: React.FC<TourCardProps> = ({ tour }) => {
-  const formatDestinations = (d: any) => {
+  const formatDestinations = (d: string | string[] | Record<string, string> | Record<string, string>[]) => {
     if (!d) return '';
     if (typeof d === 'string') return d;
     if (Array.isArray(d)) {
-      if (d.every((item) => typeof item === 'string')) return d.join(', ');
-      return d
+      if (d.every((item) => typeof item === 'string')) return (d as string[]).join(', ');
+      return (d as Record<string, string>[])
         .map((item) => item?.name ?? item?.title ?? String(item))
         .join(', ');
     }

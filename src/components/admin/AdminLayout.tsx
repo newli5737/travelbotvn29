@@ -117,18 +117,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white dark:bg-card border-b border-border p-4 flex items-center gap-4">
+        {/* Mobile Menu Button */}
+        <div className="md:hidden bg-white dark:bg-card border-b border-border p-4">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
           >
             <Menu className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Bảng Điều Khiển Quản Trị
-          </h1>
-        </header>
+        </div>
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto p-6">{children}</main>

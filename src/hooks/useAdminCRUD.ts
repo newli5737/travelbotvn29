@@ -27,27 +27,35 @@ export const useAdminCRUD = <T extends { id: string }>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Extract stable values from options to avoid unnecessary updates
+  const endpoint = options.endpoint;
+  const onSuccess = options.onSuccess;
+  const onError = options.onError;
+
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await axiosClient.get<ApiResponse<T[]>>(
-        `/admin/${options.endpoint}`
+      const response = await axiosClient.get<T[] | ApiResponse<T[]>>(
+        `/${endpoint}/`
       );
 
-      if (response.data.data) {
-        setData(response.data.data);
-        options.onSuccess?.(response.data.data);
-      }
+      // Handle both response formats: T[] or ApiResponse<T[]>
+      const dataArray = Array.isArray(response.data)
+        ? response.data
+        : response.data.data || [];
+
+      setData(dataArray);
+      onSuccess?.(dataArray);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data';
       setError(errorMessage);
-      options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+      onError?.(err instanceof Error ? err : new Error(errorMessage));
     } finally {
       setIsLoading(false);
     }
-  }, [options]);
+  }, [endpoint, onSuccess, onError]);
 
   const createItem = useCallback(
     async (item: Omit<T, 'id'>): Promise<T | null> => {
@@ -55,27 +63,30 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        const response = await axiosClient.post<ApiResponse<T>>(
-          `/admin/${options.endpoint}`,
+        const response = await axiosClient.post<T | ApiResponse<T>>(
+          `/${endpoint}/`,
           item
         );
 
-        if (response.data.data) {
-          setData((prev) => [...prev, response.data.data as T]);
-          options.onSuccess?.(response.data.data);
-          return response.data.data;
+        // Handle both response formats: T or ApiResponse<T>
+        const newItem = (response.data as any).data || response.data;
+
+        if (newItem && newItem.id) {
+          setData((prev) => [...prev, newItem as T]);
+          onSuccess?.(newItem);
+          return newItem as T;
         }
         return null;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to create item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onSuccess, onError]
   );
 
   const updateItem = useCallback(
@@ -84,31 +95,34 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        const response = await axiosClient.put<ApiResponse<T>>(
-          `/admin/${options.endpoint}/${id}`,
+        const response = await axiosClient.put<T | ApiResponse<T>>(
+          `/${endpoint}/${id}/`,
           item
         );
 
-        if (response.data.data) {
+        // Handle both response formats: T or ApiResponse<T>
+        const updatedItem = (response.data as any).data || response.data;
+
+        if (updatedItem && updatedItem.id) {
           setData((prev) =>
             prev.map((existing) =>
-              existing.id === id ? response.data.data as T : existing
+              existing.id === id ? updatedItem as T : existing
             )
           );
-          options.onSuccess?.(response.data.data);
-          return response.data.data;
+          onSuccess?.(updatedItem);
+          return updatedItem as T;
         }
         return null;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to update item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return null;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onSuccess, onError]
   );
 
   const deleteItem = useCallback(
@@ -117,19 +131,19 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        await axiosClient.delete(`/admin/${options.endpoint}/${id}`);
+        await axiosClient.delete(`/${endpoint}/${id}/`);
         setData((prev) => prev.filter((item) => item.id !== id));
         return true;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to delete item';
         setError(errorMessage);
-        options.onError?.(err instanceof Error ? err : new Error(errorMessage));
+        onError?.(err instanceof Error ? err : new Error(errorMessage));
         return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [options]
+    [endpoint, onError]
   );
 
   const clearError = useCallback(() => {

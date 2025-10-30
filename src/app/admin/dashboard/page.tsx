@@ -48,12 +48,35 @@ export default function DashboardPage() {
   const fetchStats = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosClient.get<ApiResponse<DashboardStats>>(
-        '/admin/dashboard/stats'
-      );
-      if (response.data.data) {
-        setStats(response.data.data);
-      }
+
+      const [destinationsRes, hotelsRes, toursRes, restaurantsRes, activitiesRes, reviewsRes] =
+        await Promise.all([
+          axiosClient.get<ApiResponse<unknown[]>>('/destinations/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/hotels/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/tours/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/restaurants/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/activities/'),
+          axiosClient.get<ApiResponse<unknown[]>>('/reviews/'),
+        ]).catch((error) => {
+          console.error('Failed to fetch stats:', error);
+          return [
+            { data: { data: [] } },
+            { data: { data: [] } },
+            { data: { data: [] } },
+            { data: { data: [] } },
+            { data: { data: [] } },
+            { data: { data: [] } },
+          ];
+        });
+
+      setStats({
+        destinations_count: destinationsRes.data.data?.length || 0,
+        hotels_count: hotelsRes.data.data?.length || 0,
+        tours_count: toursRes.data.data?.length || 0,
+        restaurants_count: restaurantsRes.data.data?.length || 0,
+        activities_count: activitiesRes.data.data?.length || 0,
+        reviews_count: reviewsRes.data.data?.length || 0,
+      });
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     } finally {
