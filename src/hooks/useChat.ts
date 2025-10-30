@@ -172,12 +172,17 @@ export const useChat = () => {
       console.log('🧹 Cleaning up WebSocket');
       isMountedRef.current = false;
       isConnectingRef.current = false;
-      
+
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
-      
+
+      if (botResponseTimeoutRef.current) {
+        clearTimeout(botResponseTimeoutRef.current);
+        botResponseTimeoutRef.current = null;
+      }
+
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
