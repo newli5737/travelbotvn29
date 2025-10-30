@@ -20,6 +20,15 @@ interface UseCRUDReturn<T> {
   clearError: () => void;
 }
 
+// Type guard để kiểm tra response có field "data"
+function isApiResponse<U>(obj: unknown): obj is ApiResponse<U> {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'data' in obj
+  );
+}
+
 export const useAdminCRUD = <T extends { id: string }>(
   options: UseCRUDOptions<T>
 ): UseCRUDReturn<T> => {
@@ -27,10 +36,7 @@ export const useAdminCRUD = <T extends { id: string }>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Extract stable values from options to avoid unnecessary updates
-  const endpoint = options.endpoint;
-  const onSuccess = options.onSuccess;
-  const onError = options.onError;
+  const { endpoint, onSuccess, onError } = options;
 
   const fetchData = useCallback(async () => {
     try {
@@ -41,10 +47,9 @@ export const useAdminCRUD = <T extends { id: string }>(
         `/${endpoint}/`
       );
 
-      // Handle both response formats: T[] or ApiResponse<T[]>
-      const dataArray = Array.isArray(response.data)
-        ? response.data
-        : response.data.data || [];
+      const dataArray = isApiResponse<T[]>(response.data)
+        ? response.data.data ?? []
+        : response.data;
 
       setData(dataArray);
       onSuccess?.(dataArray);
@@ -68,13 +73,14 @@ export const useAdminCRUD = <T extends { id: string }>(
           item
         );
 
-        // Handle both response formats: T or ApiResponse<T>
-        const newItem = (response.data as any).data || response.data;
+        const newItem = isApiResponse<T>(response.data)
+          ? response.data.data
+          : response.data;
 
         if (newItem && newItem.id) {
-          setData((prev) => [...prev, newItem as T]);
+          setData((prev) => [...prev, newItem]);
           onSuccess?.(newItem);
-          return newItem as T;
+          return newItem;
         }
         return null;
       } catch (err) {
@@ -100,17 +106,18 @@ export const useAdminCRUD = <T extends { id: string }>(
           item
         );
 
-        // Handle both response formats: T or ApiResponse<T>
-        const updatedItem = (response.data as any).data || response.data;
+        const updatedItem = isApiResponse<T>(response.data)
+          ? response.data.data
+          : response.data;
 
         if (updatedItem && updatedItem.id) {
           setData((prev) =>
             prev.map((existing) =>
-              existing.id === id ? updatedItem as T : existing
+              existing.id === id ? updatedItem : existing
             )
           );
           onSuccess?.(updatedItem);
-          return updatedItem as T;
+          return updatedItem;
         }
         return null;
       } catch (err) {
