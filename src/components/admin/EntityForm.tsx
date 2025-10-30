@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,7 +19,7 @@ interface FormField {
   options?: { value: string; label: string }[];
 }
 
-export interface EntityFormProps<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>> {
+export interface EntityFormProps<T extends z.ZodTypeAny> {
   title: string;
   fields: FormField[];
   defaultValues?: Partial<z.infer<T>>;
@@ -30,7 +30,7 @@ export interface EntityFormProps<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape
   schema: T;
 }
 
-export function EntityForm<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>>({
+export function EntityForm<T extends z.ZodTypeAny>({
   title,
   fields,
   defaultValues,
@@ -40,10 +40,16 @@ export function EntityForm<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>>({
   onCancel,
   schema,
 }: EntityFormProps<T>) {
-  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<T>>({
-    resolver: zodResolver(schema),
-    defaultValues: defaultValues as z.infer<T> | undefined,
+  type FormData = z.infer<T> & FieldValues;
+  
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema) as any,
+    defaultValues: defaultValues as any,
   });
+
+  const onSubmitHandler = async (data: FormData) => {
+    await onSubmit(data as z.infer<T>);
+  };
 
   return (
     <Card>
@@ -51,7 +57,7 @@ export function EntityForm<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>>({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-6">
           {error && (
             <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-lg flex items-center gap-3">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -72,14 +78,14 @@ export function EntityForm<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>>({
                   placeholder={field.placeholder}
                   disabled={isLoading}
                   className="flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  {...register(field.name as keyof z.infer<T>)}
+                  {...register(field.name as any)}
                 />
               ) : field.type === 'select' ? (
                 <select
                   id={field.name}
                   disabled={isLoading}
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  {...register(field.name as keyof z.infer<T>)}
+                  {...register(field.name as any)}
                 >
                   <option value="">Select {field.label}</option>
                   {field.options?.map((opt) => (
@@ -94,13 +100,13 @@ export function EntityForm<T extends z.ZodType<z.ZodTypeAny, z.ZodRawShape>>({
                   type={field.type || 'text'}
                   placeholder={field.placeholder}
                   disabled={isLoading}
-                  {...register(field.name as keyof z.infer<T>)}
+                  {...register(field.name as any)}
                 />
               )}
 
               {field.name in errors && (
                 <p className="text-sm text-destructive">
-                  {(errors[field.name as keyof z.infer<T>] as { message?: string })?.message}
+                  {(errors[field.name as keyof typeof errors] as any)?.message}
                 </p>
               )}
             </div>
