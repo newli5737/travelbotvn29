@@ -32,14 +32,17 @@ export const useAdminCRUD = <T extends { id: string }>(
       setIsLoading(true);
       setError(null);
 
-      const response = await axiosClient.get<ApiResponse<T[]>>(
+      const response = await axiosClient.get<T[] | ApiResponse<T[]>>(
         `/${options.endpoint}`
       );
 
-      if (response.data.data) {
-        setData(response.data.data);
-        options.onSuccess?.(response.data.data);
-      }
+      // Handle both response formats: T[] or ApiResponse<T[]>
+      const dataArray = Array.isArray(response.data)
+        ? response.data
+        : response.data.data || [];
+
+      setData(dataArray);
+      options.onSuccess?.(dataArray);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data';
       setError(errorMessage);
@@ -55,15 +58,18 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        const response = await axiosClient.post<ApiResponse<T>>(
+        const response = await axiosClient.post<T | ApiResponse<T>>(
           `/${options.endpoint}`,
           item
         );
 
-        if (response.data.data) {
-          setData((prev) => [...prev, response.data.data as T]);
-          options.onSuccess?.(response.data.data);
-          return response.data.data;
+        // Handle both response formats: T or ApiResponse<T>
+        const newItem = (response.data as any).data || response.data;
+
+        if (newItem && newItem.id) {
+          setData((prev) => [...prev, newItem as T]);
+          options.onSuccess?.(newItem);
+          return newItem as T;
         }
         return null;
       } catch (err) {
@@ -84,19 +90,22 @@ export const useAdminCRUD = <T extends { id: string }>(
         setError(null);
         setIsLoading(true);
 
-        const response = await axiosClient.put<ApiResponse<T>>(
+        const response = await axiosClient.put<T | ApiResponse<T>>(
           `/${options.endpoint}/${id}`,
           item
         );
 
-        if (response.data.data) {
+        // Handle both response formats: T or ApiResponse<T>
+        const updatedItem = (response.data as any).data || response.data;
+
+        if (updatedItem && updatedItem.id) {
           setData((prev) =>
             prev.map((existing) =>
-              existing.id === id ? response.data.data as T : existing
+              existing.id === id ? updatedItem as T : existing
             )
           );
-          options.onSuccess?.(response.data.data);
-          return response.data.data;
+          options.onSuccess?.(updatedItem);
+          return updatedItem as T;
         }
         return null;
       } catch (err) {
