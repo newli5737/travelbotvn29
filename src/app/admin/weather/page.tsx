@@ -140,14 +140,14 @@ export default function WeatherPage() {
   // Convert Weather boolean to string for select field
   const getDefaultValues = (weather: Weather | null): Partial<WeatherFormData> | undefined => {
     if (!weather) return undefined;
-    
+
     return {
       destination_id: weather.destination_id,
       month: weather.month,
       avg_temp: weather.avg_temp,
       description: weather.description,
       is_best_time: weather.is_best_time ? 'true' : 'false',
-    } as any;
+    };
   };
 
   return (

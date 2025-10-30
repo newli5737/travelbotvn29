@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { DestinationCard } from '@/components/cards/DestinationCard';
-import { Destination, ApiResponse } from '@/types';
+import { Destination } from '@/types';
 import axiosClient from '@/lib/axiosClient';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';

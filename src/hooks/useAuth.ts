@@ -28,7 +28,7 @@ export const useAuth = () => {
   // Initialize from localStorage on mount
   useEffect(() => {
     store.initializeFromStorage();
-  }, [store]);
+  }, []);
 
   const login = useCallback(
     async (credentials: LoginCredentials) => {
@@ -67,7 +67,7 @@ export const useAuth = () => {
     (user: AuthUser) => {
       store.setUser(user);
     },
-    [store]
+    []
   );
 
   return {
